@@ -18,12 +18,25 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	var content string
+	var (
+		name        string
+		content     string
+		invalidName bool = true
+	)
 	client := openai.NewClient(os.Getenv("OPEN_AI_API_KEY"))
 
+	// set name
+	for invalidName {
+		name = StringPrompt("Hi, what is your name?")
+
+		if len(name) >= 3 {
+			invalidName = false
+		}
+
+	}
 	for {
 
-		content = StringPrompt("Musa: ")
+		content = StringPrompt(name + " : ")
 
 		resp, err := client.CreateChatCompletion(
 			context.Background(),
