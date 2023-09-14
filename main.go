@@ -4,18 +4,20 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
 
+	"github.com/joho/godotenv"
 	openai "github.com/sashabaranov/go-openai"
 )
 
 func main() {
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Fatal("Error loading .env file")
-	// }
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
 	var (
 		name          string
@@ -31,7 +33,12 @@ func main() {
 			Openai api key is required (ex: sk-eM0aaaWkgUIrmRwlUJLToBT3BlbkFJysHpaj8e4x36Qux8), 
 			if you have no idea about api key, you must open your openai account first and generate an api key on this page https://platform.openai.com/account/api-keys
 		`)
-		apiKey = StringPrompt("Supply your API key, please: ")
+		apiKey = os.Getenv("OPEN_AI_API_KEY")
+
+		if apiKey == "" {
+			apiKey = StringPrompt("Supply your API key, please: ")
+		}
+
 		responseCode := ApiKeyValidation(apiKey)
 		if responseCode == 200 {
 			invalidApiKey = false
